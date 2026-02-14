@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>360 Flip Valentine</title>
+    <style>
+        :root {
+            --primary-red: #ff4d6d;
+            --soft-pink: #fff0f3;
+            --dark-red: #800f2f;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle, #fff0f3 0%, #ffccd5 100%);
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            perspective: 1200px;
+        }
+
+        /* Container for the 3D space */
+        .scene {
+            width: 300px;
+            height: 400px;
+            perspective: 1200px;
+        }
+
+        /* The Card Object */
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        /* The Flip Logic */
+        .card.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        /* Card Faces */
+        .card__face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            padding: 30px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        /* Front Face */
+        .card__face--front {
+            background-color: var(--primary-red);
+            color: white;
+            border: 5px solid white;
+        }
+
+        /* Back Face (Inside) */
+        .card__face--back {
+            background-color: white;
+            color: var(--dark-red);
+            transform: rotateY(180deg);
+            border: 5px solid var(--primary-red);
+        }
+
+        .heart {
+            font-size: 80px;
+            animation: beat 1s infinite alternate;
+        }
+
+        @keyframes beat {
+            to { transform: scale(1.1); }
+        }
+
+        h1 { margin: 10px 0; font-size: 1.8rem; }
+        p { line-height: 1.6; }
+
+        .tap-hint {
+            position: absolute;
+            bottom: 20px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.7;
+        }
+
+        /* Floating Hearts Background */
+        .bg-heart {
+            position: absolute;
+            color: rgba(255, 77, 109, 0.3);
+            user-select: none;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Mobile Optimization */
+        @media (max-width: 480px) {
+            .scene { width: 260px; height: 360px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="scene">
+        <div class="card" id="card" onclick="flipCard()">
+            <div class="card__face card__face--front">
+                <div class="heart">❤️</div>
+                <h1>For You</h1>
+                <p>A little something special inside...❤️</p>
+                <div class="tap-hint">Tap to Flip</div>
+            </div>
+
+            <div class="card__face card__face--back">
+                <div class="heart" style="font-size: 50px;">💖</div>
+                <h2>Happy Valentine's Day!</h2>
+                <p>I hope your day is as wonderful as you are. Thanks for being my best supportive person.</p>
+                <div class="tap-hint">Tap to go back</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Flip function
+        function flipCard() {
+            document.getElementById('card').classList.toggle('is-flipped');
+        }
+
+        // Generate falling hearts background
+        function createFloatingHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('bg-heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.top = '-5vh';
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            heart.style.opacity = Math.random();
+            
+            document.body.appendChild(heart);
+
+            const fallDuration = Math.random() * 3 + 4;
+            heart.animate([
+                { transform: 'translateY(0) rotate(0deg)' },
+                { transform: `translateY(110vh) rotate(${Math.random() * 360}deg)` }
+            ], {
+                duration: fallDuration * 1000,
+                easing: 'linear'
+            });
+
+            setTimeout(() => { heart.remove(); }, fallDuration * 1000);
+        }
+
+        setInterval(createFloatingHeart, 400);
+    </script>
+</body>
+</html>
